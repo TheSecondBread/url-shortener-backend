@@ -25,19 +25,23 @@ public class UrlRepository {
         }
         return x.toString();
     }
-    public String GetLink(String url){
-            List<String> result =jdbcClient
-                    .sql("SELECT link FROM links WHERE url = ?")
+    public String GetLink(String  url){
+            List<Url> a= jdbcClient
+                    .sql("SELECT * FROM links WHERE url = ?")
                     .param(url)
-                    .query(String.class)
+                    .query(Url.class)
                     .list();
-            return result.get(0);
+            return (a.get(0)).link();
     }
-    public String AddUrl(Url url){
+    public Url AddUrl(Url url){
         String x=ShortenUrl();
-        jdbcClient.sql("INSERT INTO LINKS(id,link,url) VALUES(?,?,?)")
-                .params(List.of(url.id(),url.link(),x))
-                .update();
-        return x;
+        jdbcClient.sql("INSERT INTO LINKS(link,url) VALUES(?,?)")
+                .params(url.link(),x)
+               .update();
+        List<Url> a= jdbcClient.sql("SELECT * FROM links")
+                .query(Url.class)
+                .list();
+        return a.get(a.size()-1);
+
     }
 }

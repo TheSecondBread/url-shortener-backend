@@ -6,3 +6,4 @@ public record Url(
         String url
 ) {
 }
+
